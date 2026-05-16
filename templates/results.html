@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="results-page">
+    <!-- Header Section with Original Text -->
+    <section class="results-section original-text-section">
+        <h2>📝 Original Text</h2>
+        <div class="original-text-box">
+            <div id="original-text-with-furigana" class="japanese-text-large">
+                <!-- Will be populated with ruby tags by JavaScript -->
+                {{ original_text if original_text else '' }}
+            </div>
+            <div class="jlpt-level-badge-container">
+                <span id="jlpt-level-badge" class="jlpt-badge">
+                    <!-- JLPT level badge will be added by JavaScript -->
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vocabulary Section -->
+    <section class="results-section vocabulary-section">
+        <h2>📚 Vocabulary</h2>
+        <div id="vocabulary-grid" class="vocabulary-grid">
+            <!-- Vocabulary cards will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Grammar Patterns Section -->
+    <section class="results-section grammar-section">
+        <h2>📖 Grammar Patterns</h2>
+        <div id="grammar-list" class="grammar-list">
+            <!-- Grammar patterns will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Translation Section -->
+    <section class="results-section translation-section">
+        <h2>🌐 English Translation</h2>
+        <div id="translation-text" class="translation-box">
+            <!-- Translation will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Cultural Notes Section -->
+    <section class="results-section cultural-section">
+        <h2>🎎 Cultural Notes</h2>
+        <ul id="cultural-notes-list" class="cultural-notes-list">
+            <!-- Cultural notes will be populated by JavaScript -->
+        </ul>
+    </section>
+
+    <!-- Actions -->
+    <div class="results-actions">
+        <a href="/" class="btn-primary">
+            ← Analyze Another Text
+        </a>
+    </div>
+</div>
+{% endblock %}
