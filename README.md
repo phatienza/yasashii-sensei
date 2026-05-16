@@ -98,6 +98,7 @@ yasashii-sensei/
 ├── services/
 │   ├── watsonx_service.py     # watsonx.ai integration
 │   ├── articles_service.py    # Sample articles
+│   ├── tts_service.py         # Text-to-Speech integration
 │   └── telegram_service.py    # Telegram bot logic
 ├── templates/                  # HTML templates
 ├── static/                     # CSS, JS, assets
@@ -167,6 +168,7 @@ WATSONX_URL=https://us-south.ml.cloud.ibm.com
 # IBM Watson Text-to-Speech (CORE feature)
 IBM_TTS_API_KEY=your_tts_api_key_here
 IBM_TTS_URL=https://api.us-south.text-to-speech.watson.cloud.ibm.com
+IBM_TTS_VOICE=ja-JP_EmiV3Voice
 
 # Flask
 FLASK_PORT=5001
@@ -194,14 +196,11 @@ TELEGRAM_BOT_TOKEN=your_bot_token_from_botfather
 - [x] Error handling and recovery
 - [x] Japanese text detection
 - [x] Message formatting per yasashii-telegram skill
+- [x] Text-to-Speech (IBM Watson TTS)
 
 ### 🔄 In Progress
 - [ ] Demo video recording
 - [ ] Final testing and polish
-
-### 🎁 Stretch Goals (Optional)
-- [ ] Text-to-Speech (IBM Watson TTS)
-- [ ] Additional article sources
 
 ## 🐛 Troubleshooting
 

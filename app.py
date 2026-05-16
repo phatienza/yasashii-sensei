@@ -16,6 +16,7 @@ from services.articles_service import (
     get_articles_by_difficulty,
     get_articles_by_topic
 )
+from services import tts_service
 
 # Load environment variables
 load_dotenv()
@@ -236,6 +237,66 @@ def get_article(article_id):
         }), 500
 
 
+@app.route('/api/tts', methods=['POST'])
+def text_to_speech():
+    """
+    Convert Japanese text to speech using IBM Watson TTS.
+    
+    Request JSON:
+        {
+            "text": "Japanese text to synthesize"
+        }
+    
+    Returns:
+        Audio bytes (audio/mp3) or JSON error with 500 status
+    """
+    try:
+        # Validate request
+        if not request.is_json:
+            return jsonify({
+                'error': 'Request must be JSON',
+                'message': 'Content-Type must be application/json'
+            }), 400
+        
+        data = request.get_json()
+        
+        # Validate required fields
+        if 'text' not in data:
+            return jsonify({
+                'error': 'Missing required field',
+                'message': 'Field "text" is required'
+            }), 400
+        
+        japanese_text = data['text'].strip()
+        
+        # Validate text is not empty
+        if not japanese_text:
+            return jsonify({
+                'error': 'Empty text',
+                'message': 'Text cannot be empty'
+            }), 400
+        
+        # Synthesize speech
+        audio_bytes = tts_service.synthesize_japanese(japanese_text)
+        
+        if audio_bytes is None:
+            return jsonify({
+                'error': 'TTS synthesis failed',
+                'message': 'Could not synthesize speech. Please try again.'
+            }), 500
+        
+        # Return audio bytes
+        from flask import Response
+        return Response(audio_bytes, mimetype='audio/mp3')
+        
+    except Exception as e:
+        app.logger.error(f"TTS error: {str(e)}")
+        return jsonify({
+            'error': 'TTS failed',
+            'message': str(e)
+        }), 500
+
+
 @app.route('/api/telegram/webhook', methods=['POST'])
 def telegram_webhook():
     """
@@ -328,6 +389,7 @@ if __name__ == '__main__':
     print("  GET  /                    → Homepage")
     print("  GET  /results             → Results page")
     print("  POST /api/analyze         → Analyze Japanese text")
+    print("  POST /api/tts             → Text-to-speech synthesis")
     print("  GET  /api/articles        → Get all articles")
     print("  GET  /api/articles/<id>   → Get article by ID")
     print("  GET  /api/health          → Health check")

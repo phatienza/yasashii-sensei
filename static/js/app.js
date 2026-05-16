@@ -405,6 +405,76 @@ function displayCulturalNotes(notes) {
 }
 
 // ===================================
+// Text-to-Speech Function
+// ===================================
+async function listenToText() {
+    console.log('Playing text-to-speech...');
+    
+    const button = document.getElementById('listen-btn');
+    const originalText = sessionStorage.getItem('originalText');
+    
+    if (!originalText) {
+        console.error('No original text found');
+        return;
+    }
+    
+    // Show loading state
+    button.textContent = '⏳ Loading...';
+    button.disabled = true;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/tts`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: originalText })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        }
+        
+        // Get audio blob
+        const audioBlob = await response.blob();
+        
+        // Create audio URL
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        // Create and play audio
+        const audio = new Audio(audioUrl);
+        
+        // Update button to show playing state
+        button.textContent = '⏸ Playing...';
+        
+        // Play audio
+        await audio.play();
+        
+        // Reset button when audio ends
+        audio.addEventListener('ended', () => {
+            button.textContent = '🔊 Listen';
+            button.disabled = false;
+            URL.revokeObjectURL(audioUrl);
+        });
+        
+        // Handle errors during playback
+        audio.addEventListener('error', (e) => {
+            console.error('Audio playback error:', e);
+            button.textContent = '🔊 Listen';
+            button.disabled = false;
+            URL.revokeObjectURL(audioUrl);
+        });
+        
+    } catch (error) {
+        console.error('Error playing audio:', error);
+        button.textContent = '🔊 Listen';
+        button.disabled = false;
+        alert('Failed to play audio. Please try again.');
+    }
+}
+
+// ===================================
 // Loading State Management
 // ===================================
 function showLoading() {
@@ -457,6 +527,7 @@ function escapeHtml(text) {
 window.switchTab = switchTab;
 window.selectArticle = selectArticle;
 window.analyzeText = analyzeText;
+window.listenToText = listenToText;
 
 console.log('Yasashii Sensei app.js loaded successfully');
 

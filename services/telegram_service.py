@@ -11,6 +11,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQu
 
 from services.watsonx_service import WatsonxService
 from services.articles_service import get_articles, get_article_by_id
+from services import tts_service
 
 
 class TelegramService:
@@ -57,6 +58,9 @@ class TelegramService:
     def get_lesson_keyboard(self):
         """Get post-lesson navigation inline keyboard."""
         keyboard = [
+            [
+                InlineKeyboardButton("🔊 Listen", callback_data="listen")
+            ],
             [
                 InlineKeyboardButton("📰 More Articles", callback_data="articles"),
                 InlineKeyboardButton("🎲 Random Article", callback_data="random")
@@ -307,15 +311,10 @@ Choose an article to analyze:
                 
                 try:
                     # Analyze article using watsonx.ai
-                    print(f"Analyzing article: {article_id}")
-                    print(f"Article content: {article['content'][:100]}...")
-                    
                     analysis = self.watsonx_service.analyze_text(article['content'])
                     
-                    # Debug output
-                    print(f"Analysis result keys: {list(analysis.keys())}")
-                    print(f"Vocab count: {len(analysis.get('vocabulary', []))}")
-                    print(f"Grammar count: {len(analysis.get('grammar_points', []))}")
+                    # Store analyzed text for TTS
+                    context.user_data['last_text'] = article['content']
                     
                     # Format response for Telegram
                     response = self.format_analysis_for_telegram(analysis, article['content'])
@@ -325,11 +324,9 @@ Choose an article to analyze:
                     
                     # Send response (split if too long)
                     if len(response) > 4096:
-                        # Split into chunks at section boundaries
                         chunks = self.split_message(response)
                         for chunk in chunks:
                             await query.message.reply_text(chunk, parse_mode='Markdown')
-                        # Send navigation buttons after last chunk
                         await query.message.reply_text(
                             "─────────────────",
                             parse_mode='Markdown',
@@ -346,8 +343,6 @@ Choose an article to analyze:
                     # Delete loading message
                     await loading_msg.delete()
                     
-                    print(f"Analysis error: {str(e)}")
-                    
                     # Send error message
                     error_message = """⚠️ *Analysis Error*
 
@@ -359,6 +354,33 @@ Please try again in a moment."""
                         parse_mode='Markdown',
                         reply_markup=self.get_error_keyboard()
                     )
+        
+        elif callback_data == "listen":
+            # Handle TTS request
+            text = context.user_data.get('last_text')
+            
+            if not text:
+                if query.message:
+                    await query.message.reply_text(
+                        "❌ No text available. Please analyze some text first.",
+                        parse_mode='Markdown'
+                    )
+                return
+            
+            # Synthesize speech
+            audio_bytes = tts_service.synthesize_japanese(text)
+            
+            if audio_bytes is None:
+                if query.message:
+                    await query.message.reply_text(
+                        "❌ Failed to generate audio. Please try again.",
+                        parse_mode='Markdown'
+                    )
+                return
+            
+            # Send as voice message
+            if query.message:
+                await query.message.reply_voice(voice=audio_bytes)
         
         elif callback_data == "retry":
             # Ask user to resend text
@@ -412,7 +434,7 @@ Please send Japanese text for analysis.
         
         # Analyze and send result
         try:
-            await self.analyze_and_send(update.message, text)
+            await self.analyze_and_send(update.message, text, context)
             # Delete loading message
             await loading_msg.delete()
         except Exception as e:
@@ -431,11 +453,15 @@ Please try again in a moment."""
                 reply_markup=self.get_error_keyboard()
             )
     
-    async def analyze_and_send(self, message, text: str):
+    async def analyze_and_send(self, message, text: str, context: Optional[ContextTypes.DEFAULT_TYPE] = None):
         """Analyze text and send formatted result."""
         try:
             # Analyze text using watsonx.ai
             analysis = self.watsonx_service.analyze_text(text)
+            
+            # Store analyzed text for TTS
+            if context and context.user_data is not None:
+                context.user_data['last_text'] = text
             
             # Format response for Telegram
             response = self.format_analysis_for_telegram(analysis, text)
