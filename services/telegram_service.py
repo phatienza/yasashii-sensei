@@ -203,7 +203,14 @@ I help you understand Japanese text by providing:
 *How to use:*
 Just send me any Japanese text and I will analyze it!"""
             
-            await query.edit_message_text(
+            # Delete current message
+            try:
+                await query.message.delete()
+            except Exception:
+                pass
+
+            # Send fresh welcome at bottom
+            await query.message.chat.send_message(
                 welcome_message,
                 parse_mode='Markdown',
                 reply_markup=self.get_welcome_keyboard()
@@ -366,10 +373,20 @@ Please try again in a moment."""
                         parse_mode='Markdown'
                     )
                 return
-            
+            # Show loading message and disable button
+            await query.answer("🔊 Generating audio... please wait ⏳")
+        
+            if query.message:
+                loading_msg = await query.message.reply_text(
+                    "🔊 *Generating Japanese audio...*\nPlease wait ⏳",
+                    parse_mode='Markdown'
+                )
             # Synthesize speech
             audio_bytes = tts_service.synthesize_japanese(text)
-            
+
+            # Delete loading message
+            await loading_msg.delete()
+
             if audio_bytes is None:
                 if query.message:
                     await query.message.reply_text(

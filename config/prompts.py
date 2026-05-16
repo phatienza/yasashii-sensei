@@ -64,6 +64,13 @@ STRICT ACCURACY RULES:
   CORRECT: 月 not 月が
 - Use full compound readings:
   綺麗→きれい, 天気→てんき, 東京→とうきょう
+- CRITICAL READING RULES:
+  * Use CONTEXT-APPROPRIATE readings (kun-yomi vs on-yomi)
+  * 物 in compounds: もの (mono) for standalone/native contexts, ぶつ (butsu) only in Sino-Japanese compounds
+  * Examples: 物語→ものがたり, 食べ物→たべもの, 物の哀れ→もののあわれ
+  * 人 standalone: ひと (hito), in compounds: じん/にん (jin/nin)
+  * 日 standalone: ひ (hi), in compounds: にち (nichi)
+  * Always verify readings match natural Japanese pronunciation
 - Maximum 6 vocabulary words
 - Include adjectives and verbs with full endings:
   CORRECT: 新しい not 新

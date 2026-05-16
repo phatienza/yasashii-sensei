@@ -55,7 +55,7 @@ function setupEventListeners() {
 }
 
 // ===================================
-// Tab Switching
+// Tab Switching with Smooth Transition
 // ===================================
 function switchTab(tabName) {
     console.log('Switching to tab:', tabName);
@@ -70,7 +70,7 @@ function switchTab(tabName) {
         }
     });
     
-    // Update tab content
+    // Update tab content with fade effect
     const tabContents = document.querySelectorAll('.tab-content');
     tabContents.forEach(content => {
         if (content.id === `${tabName}-tab`) {
@@ -130,14 +130,12 @@ function displayArticles(articles) {
     articlesContainer.innerHTML = articles.map(article => `
         <div class="article-card" onclick="selectArticle('${article.id}')">
             <div class="article-card-header">
-                <div>
-                    <h3 class="article-title">${escapeHtml(article.title)}</h3>
-                </div>
+                <h3 class="article-title">${escapeHtml(article.title)}</h3>
                 <span class="jlpt-badge ${article.difficulty.toLowerCase()}">${article.difficulty}</span>
             </div>
             <div class="article-meta">
-                <span class="article-topic">📌 ${escapeHtml(article.topic)}</span>
-                <span class="article-date">📅 ${escapeHtml(article.date)}</span>
+                <span class="article-topic">${escapeHtml(article.topic)}</span>
+                <span class="article-date">${escapeHtml(article.date)}</span>
             </div>
         </div>
     `).join('');
@@ -187,7 +185,7 @@ function updateCharacterCount() {
     } else if (count > 4000) {
         charCount.style.color = 'var(--n2-orange)';
     } else {
-        charCount.style.color = 'var(--primary-navy)';
+        charCount.style.color = 'var(--accent-primary)';
     }
 }
 
@@ -276,7 +274,7 @@ function loadResultsFromSession() {
 }
 
 // ===================================
-// Display Results
+// Display Results with Staggered Animation
 // ===================================
 function displayResults(data, originalText) {
     console.log('Displaying results:', data);
@@ -298,6 +296,21 @@ function displayResults(data, originalText) {
     
     // Display cultural notes
     displayCulturalNotes(data.cultural_notes || []);
+    
+    // Trigger staggered reveal animations
+    triggerRevealAnimations();
+}
+
+// ===================================
+// Trigger Reveal Animations
+// ===================================
+function triggerRevealAnimations() {
+    const revealElements = document.querySelectorAll('.reveal');
+    revealElements.forEach((element, index) => {
+        setTimeout(() => {
+            element.style.opacity = '1';
+        }, index * 100);
+    });
 }
 
 // ===================================
@@ -333,14 +346,14 @@ function displayVocabulary(vocabulary) {
     if (!container) return;
     
     if (!vocabulary || vocabulary.length === 0) {
-        container.innerHTML = '<p>No vocabulary items found.</p>';
+        container.innerHTML = '<p style="color: var(--text-secondary);">No vocabulary items found.</p>';
         return;
     }
     
     container.innerHTML = vocabulary.map(item => `
         <div class="vocab-card">
-            <div class="vocab-word">${escapeHtml(item.word || '')}</div>
             <div class="vocab-reading">${escapeHtml(item.reading || '')}</div>
+            <div class="vocab-word">${escapeHtml(item.word || '')}</div>
             <div class="vocab-meaning">${escapeHtml(item.meaning || '')}</div>
             <span class="jlpt-badge ${(item.jlpt_level || 'n3').toLowerCase()}">${item.jlpt_level || 'N3'}</span>
         </div>
@@ -355,7 +368,7 @@ function displayGrammar(patterns) {
     if (!container) return;
     
     if (!patterns || patterns.length === 0) {
-        container.innerHTML = '<p>No grammar patterns identified.</p>';
+        container.innerHTML = '<p style="color: var(--text-secondary);">No grammar patterns identified.</p>';
         return;
     }
     
@@ -419,7 +432,8 @@ async function listenToText() {
     }
     
     // Show loading state
-    button.textContent = '⏳ Loading...';
+    const originalContent = button.innerHTML;
+    button.innerHTML = '<span class="listen-icon">⏳</span>';
     button.disabled = true;
     
     try {
@@ -446,14 +460,14 @@ async function listenToText() {
         const audio = new Audio(audioUrl);
         
         // Update button to show playing state
-        button.textContent = '⏸ Playing...';
+        button.innerHTML = '<span class="listen-icon">⏸</span>';
         
         // Play audio
         await audio.play();
         
         // Reset button when audio ends
         audio.addEventListener('ended', () => {
-            button.textContent = '🔊 Listen';
+            button.innerHTML = originalContent;
             button.disabled = false;
             URL.revokeObjectURL(audioUrl);
         });
@@ -461,14 +475,14 @@ async function listenToText() {
         // Handle errors during playback
         audio.addEventListener('error', (e) => {
             console.error('Audio playback error:', e);
-            button.textContent = '🔊 Listen';
+            button.innerHTML = originalContent;
             button.disabled = false;
             URL.revokeObjectURL(audioUrl);
         });
         
     } catch (error) {
         console.error('Error playing audio:', error);
-        button.textContent = '🔊 Listen';
+        button.innerHTML = originalContent;
         button.disabled = false;
         alert('Failed to play audio. Please try again.');
     }

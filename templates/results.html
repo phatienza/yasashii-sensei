@@ -1,55 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="results-page">
-    <!-- Header Section with Original Text -->
-    <section class="results-section original-text-section">
-        <h2>📝 Original Text</h2>
-        <div class="original-text-box">
-            <div id="original-text-with-furigana" class="japanese-text-large">
-                <!-- Will be populated with ruby tags by JavaScript -->
+<div class="results-container">
+    <!-- Original Text Section with Ink Reveal -->
+    <section class="results-section reveal">
+        <h2 class="section-title">Original Text</h2>
+        <div class="original-text-card">
+            <div class="jlpt-badge-container">
+                <span id="jlpt-level-badge" class="jlpt-badge"></span>
+            </div>
+            <div id="original-text-with-furigana" class="jp-text original-text-display">
                 {{ original_text if original_text else '' }}
             </div>
-            <div class="jlpt-level-badge-container">
-                <span id="jlpt-level-badge" class="jlpt-badge">
-                    <!-- JLPT level badge will be added by JavaScript -->
-                </span>
-            </div>
-            <div style="margin-top: 1rem;">
-                <button id="listen-btn" class="btn-secondary" onclick="listenToText()">
-                    🔊 Listen
+            <div class="text-actions">
+                <button id="listen-btn" class="listen-button" onclick="listenToText()">
+                    <i data-lucide="volume-2"></i> Listen
                 </button>
             </div>
         </div>
     </section>
 
     <!-- Vocabulary Section -->
-    <section class="results-section vocabulary-section">
-        <h2>📚 Vocabulary</h2>
+    <section class="results-section reveal">
+        <h2 class="section-title"><i data-lucide="book-open"></i> Vocabulary</h2>
         <div id="vocabulary-grid" class="vocabulary-grid">
             <!-- Vocabulary cards will be populated by JavaScript -->
         </div>
     </section>
 
     <!-- Grammar Patterns Section -->
-    <section class="results-section grammar-section">
-        <h2>📖 Grammar Patterns</h2>
+    <section class="results-section reveal">
+        <h2 class="section-title"><i data-lucide="pen-line"></i> Grammar</h2>
         <div id="grammar-list" class="grammar-list">
             <!-- Grammar patterns will be populated by JavaScript -->
         </div>
     </section>
 
     <!-- Translation Section -->
-    <section class="results-section translation-section">
-        <h2>🌐 English Translation</h2>
-        <div id="translation-text" class="translation-box">
+    <section class="results-section reveal">
+        <h2 class="section-title"><i data-lucide="languages"></i> English Translation</h2>
+        <div id="translation-text" class="translation-card">
             <!-- Translation will be populated by JavaScript -->
         </div>
     </section>
 
     <!-- Cultural Notes Section -->
-    <section class="results-section cultural-section">
-        <h2>🎎 Cultural Notes</h2>
+    <section class="results-section reveal">
+        <h2 class="section-title"><i data-lucide="landmark"></i> Cultural Notes</h2>
         <ul id="cultural-notes-list" class="cultural-notes-list">
             <!-- Cultural notes will be populated by JavaScript -->
         </ul>
@@ -57,8 +54,9 @@
 
     <!-- Actions -->
     <div class="results-actions">
-        <a href="/" class="btn-primary">
-            ← Analyze Another Text
+        <a href="/" class="back-button">
+            <span class="back-arrow"><i data-lucide="arrow-left"></i></span>
+            <span class="back-text">Analyze Another Text</span>
         </a>
     </div>
 </div>

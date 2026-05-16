@@ -1,59 +1,66 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="homepage">
-    <!-- Tab Navigation -->
+<div class="homepage-container">
+    <!-- Tab Navigation with Japanese Brackets -->
     <div class="tab-navigation">
-        <button class="tab-button active" data-tab="articles" onclick="switchTab('articles')">
-            📰 Today's Articles
+        <button class="tab-button active flex items-center gap-2" data-tab="articles" onclick="switchTab('articles')">
+            <span class="tab-text"><i data-lucide="newspaper" class="w-4 h-4"></i> NHK Web Easy</span>
         </button>
-        <button class="tab-button" data-tab="paste" onclick="switchTab('paste')">
-            ✍️ Paste Your Text
+        <button class="tab-button flex items-center gap-2" data-tab="paste" onclick="switchTab('paste')">
+            <span class="tab-text"><i data-lucide="clipboard-paste" class="w-4 h-4"></i> Paste Text</span>
         </button>
     </div>
 
     <!-- Tab 1: Today's Articles -->
     <div id="articles-tab" class="tab-content active">
         <div class="section-header">
-            <h2>Today's Articles from NHK Web Easy</h2>
-            <p>Select an article to analyze with AI</p>
+            <h2 class="section-title">Today's Articles</h2>
+            <p class="section-subtitle">Select an article to analyze with AI</p>
         </div>
         
         <div id="articles-list" class="articles-grid">
-            <!-- Articles will be populated by JavaScript -->
-            <div class="loading-message">Loading articles...</div>
+            <!-- Loading skeleton -->
+            <div class="loading-skeleton">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
         </div>
     </div>
 
     <!-- Tab 2: Paste Your Text -->
     <div id="paste-tab" class="tab-content">
         <div class="section-header">
-            <h2>Analyze Japanese Text with AI</h2>
-            <p>Paste any Japanese text to get vocabulary, grammar, and cultural insights</p>
+            <h2 class="section-title">Analyze Japanese Text</h2>
+            <p class="section-subtitle">Paste any Japanese text to get vocabulary, grammar, and cultural insights</p>
         </div>
 
-        <div class="text-input-section">
+        <div class="text-input-card">
             <div class="textarea-wrapper">
                 <textarea 
                     id="japanese-text" 
-                    placeholder="日本語のテキストを入力してください...&#10;&#10;例：&#10;今日は美術館に行きました。とても面白かったです。"
+                    class="japanese-textarea"
+                    placeholder="Example：&#10;今日は美術館に行きました。とても面白かったです。"
                     maxlength="5000"
                     rows="10"
                 ></textarea>
                 <div class="character-counter">
-                    <span id="char-count">0</span> / 5000 characters
+                    <span id="char-count" class="char-count-number">0</span>
+                    <span class="char-count-max"> / 5000</span>
                 </div>
             </div>
 
             <div class="action-section">
-                <button id="analyze-btn" class="btn-primary">
-                    🤖 Analyze with AI
+                <button id="analyze-btn" class="analyze-button flex items-center gap-2">
+                    <i data-lucide="search" class="w-4 h-4"></i>Analyze
+                    <span class="button-glow"></span>
                 </button>
                 
                 <!-- Loading Spinner -->
                 <div id="loading-spinner" class="loading-spinner" style="display: none;">
-                    <div class="spinner"></div>
-                    <p>Analyzing with watsonx.ai...</p>
+                    <div class="spinner-ring"></div>
+                    <p class="loading-text">Analyzing with watsonx.ai...</p>
                 </div>
             </div>
 

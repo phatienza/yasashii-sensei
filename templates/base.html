@@ -3,40 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>やさしい先生 (Yasashii Sensei) - AI Japanese Learning Assistant</title>
+    <title>やさしい先生 - Your Gentle Japanese Teacher</title>
     
-    <!-- Google Fonts: Noto Sans JP -->
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Noto Serif JP (Japanese) + DM Sans (UI) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
-<body>
-    <!-- Header -->
-    <header class="site-header">
-        <div class="container">
-            <h1 class="site-title">やさしい先生 (Yasashii Sensei)</h1>
-            <p class="site-subtitle">AI-Powered Japanese Learning Assistant</p>
-        </div>
+<body class="bg-primary text-primary">
+    <!-- Header Banner -->
+    <header class="header-banner">
+        <div class="banner-overlay"></div>
+        <img 
+            src="{{ url_for('static', filename='images/header-banner.png') }}" 
+            alt="やさしい先生"
+            class="banner-image"
+        >
     </header>
 
     <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
+    <main class="main-container">
+        <div class="content-wrapper">
             {% block content %}{% endblock %}
         </div>
     </main>
 
     <!-- Footer -->
     <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 Yasashii Sensei. Built for IBM Bob Hackathon.</p>
+        <div class="footer-content">
+            <p>Built for IBM Bob Hackathon 2026</p>
         </div>
     </footer>
 
     <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

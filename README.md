@@ -197,10 +197,7 @@ TELEGRAM_BOT_TOKEN=your_bot_token_from_botfather
 - [x] Japanese text detection
 - [x] Message formatting per yasashii-telegram skill
 - [x] Text-to-Speech (IBM Watson TTS)
-
-### 🔄 In Progress
-- [ ] Demo video recording
-- [ ] Final testing and polish
+- [x] Final testing and polish
 
 ## 🐛 Troubleshooting
 
