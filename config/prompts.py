@@ -59,19 +59,18 @@ Required JSON structure:
 }}
 
 STRICT ACCURACY RULES:
-- Extract individual words only, NEVER include particles
-  (は、が、を、に、で、の、へ、と、も) as part of the word
+- Extract words EXACTLY as they appear in text
+- NEVER include particles as part of a word
   CORRECT: 月 not 月が
-  CORRECT: 綺麗 not 綺麗です
-- Only include words that ACTUALLY EXIST in the input text
-  NEVER invent or hallucinate words
-- Always use full compound readings:
-  綺麗 → きれい, 天気 → てんき, 東京 → とうきょう
-- Always identify ですね as a grammar pattern when present
-- Always identify common patterns: です、ます、ている、
-  てください、たい、ない、でしょう、ですね、ますね
-- For famous or culturally significant phrases,
-  always include the cultural context in cultural_notes
+- Use full compound readings:
+  綺麗→きれい, 天気→てんき, 東京→とうきょう
+- Maximum 6 vocabulary words
+- Include adjectives and verbs with full endings:
+  CORRECT: 新しい not 新
+  CORRECT: 勉強する not 勉強
+- Only identify grammar patterns actually in the text
+- Include cultural context for significant phrases
+- Always include literary references when relevant
 
 CRITICAL: Return ONLY valid JSON. No markdown, no code blocks, no explanations. Just the JSON object."""
 

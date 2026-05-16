@@ -14,6 +14,7 @@ Requirements:
 
 import os
 import sys
+import logging
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -21,7 +22,13 @@ load_dotenv()
 
 # Import services
 from services.watsonx_service import WatsonxService
-from services.telegram_service import TelegramService
+from services.telegram_service import create_telegram_bot
+
+# Setup logging
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
 
 
 def validate_environment():
@@ -60,9 +67,9 @@ def main():
         print("✅ Environment variables validated")
         
         # Get configuration from environment
-        telegram_token = os.getenv("TELEGRAM_BOT_TOKEN")
-        watsonx_api_key = os.getenv("WATSONX_API_KEY")
-        watsonx_project_id = os.getenv("WATSONX_PROJECT_ID")
+        telegram_token = os.getenv("TELEGRAM_BOT_TOKEN", "")
+        watsonx_api_key = os.getenv("WATSONX_API_KEY", "")
+        watsonx_project_id = os.getenv("WATSONX_PROJECT_ID", "")
         watsonx_url = os.getenv("WATSONX_URL", "https://us-south.ml.cloud.ibm.com")
         
         # Initialize watsonx.ai service
@@ -78,21 +85,15 @@ def main():
         print(f"   Primary model: {model_info['primary_model']}")
         print(f"   Fallback model: {model_info['fallback_model']}")
         
-        # Initialize Telegram service
+        # Create and start Telegram bot
         print("\n📱 Initializing Telegram bot service...")
-        telegram_service = TelegramService(
-            bot_token=telegram_token,
-            watsonx_service=watsonx_service
-        )
-        print("✅ Telegram service initialized")
-        
-        # Start bot
-        print("\n" + "=" * 60)
+        print("=" * 60)
         print("🚀 Starting Telegram bot (polling mode)...")
         print("=" * 60)
         print("\n💡 Bot is now running. Press Ctrl+C to stop.\n")
         
-        telegram_service.run()
+        # Create and run bot (this will block until stopped)
+        create_telegram_bot(telegram_token, watsonx_service)
         
     except KeyboardInterrupt:
         print("\n\n⏹️  Bot stopped by user")
