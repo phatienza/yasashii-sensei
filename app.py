@@ -371,10 +371,9 @@ def request_too_large(error):
 
 if __name__ == '__main__':
     # Get configuration from environment
-    flask_env = os.getenv('FLASK_ENV', 'development')
-    flask_debug = os.getenv('FLASK_DEBUG', 'True').lower() == 'true'
-    flask_port = int(os.getenv('FLASK_PORT', 5000))
-    flask_host = os.getenv('FLASK_HOST', '0.0.0.0')
+    # Railway sets PORT, fallback to FLASK_PORT for local development
+    port = int(os.environ.get('PORT', os.environ.get('FLASK_PORT', 5001)))
+    flask_env = os.getenv('FLASK_ENV', 'production')
     
     # Print startup information
     print("=" * 60)
@@ -382,8 +381,8 @@ if __name__ == '__main__':
     print("AI-Powered Japanese Learning Assistant")
     print("=" * 60)
     print(f"Environment: {flask_env}")
-    print(f"Debug Mode: {flask_debug}")
-    print(f"Server: http://{flask_host}:{flask_port}")
+    print(f"Port: {port}")
+    print(f"Server: http://0.0.0.0:{port}")
     print("=" * 60)
     print("\nAvailable Routes:")
     print("  GET  /                    → Homepage")
@@ -396,11 +395,11 @@ if __name__ == '__main__':
     print("  POST /api/telegram/webhook → Telegram webhook")
     print("=" * 60)
     
-    # Run Flask app
+    # Run Flask app with production-safe settings
     app.run(
-        host=flask_host,
-        port=flask_port,
-        debug=flask_debug
+        host='0.0.0.0',
+        port=port,
+        debug=False
     )
 
 # Made with Bob
