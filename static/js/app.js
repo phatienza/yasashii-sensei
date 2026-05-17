@@ -1,7 +1,7 @@
 // ===================================
 // Configuration
 // ===================================
-const API_BASE_URL = 'http://localhost:5001';
+const API_BASE_URL = '';
 
 // ===================================
 // State Management
@@ -546,3 +546,4 @@ window.listenToText = listenToText;
 console.log('Yasashii Sensei app.js loaded successfully');
 
 // Made with Bob
+
